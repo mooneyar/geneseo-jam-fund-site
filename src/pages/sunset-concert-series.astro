@@ -1,0 +1,286 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Sponsor logo mappings: filename -> display name
+const sponsorLogoMap: Record<string, string> = {
+  'aes_logo.png': 'AES',
+  'BARILLALOGO2021.png': 'Barilla',
+  'CCOR_logo.png': 'CCOR',
+  'gvca_logo.png': 'Genesee Valley Council on the Arts',
+  'lakehour_logo.png': 'Lake Hour',
+  'nut_butter.jpg': 'Once Again Nut Butter',
+  'p_and_cg.ai.jpg': 'Power and Construction Group',
+  'racf_logo.jpg': 'Rochester Area Community Foundation',
+  'tompkins_logo.png': 'Tompkins Bank',
+  'wegmans.png': 'Wegmans',
+};
+
+const sponsorLogosDir = path.join(process.cwd(), 'public/images/sponsors');
+let sponsorLogos: string[] = [];
+try {
+  sponsorLogos = fs.readdirSync(sponsorLogosDir)
+    .filter(f => /\.(png|jpg|jpeg|svg|webp)$/i.test(f))
+    .sort();
+} catch {}
+
+// Sponsor tiers with names
+const sponsorTiers = [
+  {
+    tier: 'Legends',
+    names: ['Genesee Valley Council on the Arts', 'Barilla'],
+  },
+  {
+    tier: 'Superstars',
+    names: [
+      'Rochester Area Community Foundation',
+      'Tompkins Bank',
+      'Lake Hour',
+      'Once Again Nut Butter',
+      'AES',
+      'Power and Construction Group',
+      'John Lockhart and Lynne Mazadoorian',
+      'Dominick Ens',
+      'Jeremy and Anna Grace',
+      'Andrew Mooney and Catherine Lloyd',
+      'Will and Louise Wadsworth',
+      'Eden Dedrick',
+    ],
+  },
+  {
+    tier: 'Rock Stars',
+    names: ['Wegmans', 'Sure Can House of Creative'],
+  },
+  {
+    tier: 'Touring',
+    names: [
+      'Martin and Theresa Miskell',
+      'Ankur Patel',
+      'Liam and Jonah Grosse',
+      'Joanna and Keith Walters',
+      'Paige Thompson',
+      'James Lynch',
+      'Elizabeth Hobson and Richard Morris',
+    ],
+  },
+  {
+    tier: 'Front Row',
+    names: [
+      'Pecora and Esme Levey',
+      'Erin Sweeney',
+      'Mark Roberts',
+      'Al and Laurie Mooney',
+      'Bob Bunce',
+      'Maryann Cully',
+      'Kelley Tonra',
+      'Robert Goeckel',
+      'Lauren and Crista Wadsworth',
+      'Jeffrey Marks',
+      'Krysta Smith',
+      'Allison and Travis Cook',
+      'Grayce Mclaughlin and Fred Mingrino',
+      'Paul Schill',
+      'Sally Nelson',
+      'The Sharman Team',
+      'Jillian Baird',
+      'Paul Kreher',
+    ],
+  },
+];
+---
+
+<BaseLayout title="Sunset Concert Series" description="The Sunset Concert Series brings free live music to Geneseo, NY every summer.">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__bg" style="background-image: url('/images/sunset-series-header.jpg');"></div>
+    <div class="hero__content">
+      <h1>Sunset Concert Series</h1>
+      <p>Free live music on the Wadsworth Homestead lawn on select Thursday evenings, all summer long</p>
+    </div>
+  </section>
+
+  <!-- 2026 Season -->
+  <section class="section">
+    <div class="container text-center">
+      <h2>Planning for 2026</h2>
+      <p style="color: var(--color-text-light); max-width: 620px; margin: 0 auto 1rem;">
+        As 2025 winds down, we're busy getting organized for next summer and are reaching out
+        to foundations, businesses, and individuals for sponsorship support. We're aiming to raise
+        $50,000 to enhance artist caliber, expand activities, all while keeping admission
+        absolutely free of charge.
+      </p>
+      <p style="color: var(--color-text-light); max-width: 620px; margin: 0 auto 1.5rem;">
+        Interested in helping? Contact us at
+        <a href="mailto:mooney@geneseojamfund.org">mooney@geneseojamfund.org</a>.
+        Follow us on
+        <a href="https://www.instagram.com/geneseojamfund/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        and
+        <a href="https://www.facebook.com/geneseojamfund" target="_blank" rel="noopener noreferrer">Facebook</a>
+        to be the first to know when we announce next summer's lineup!
+      </p>
+      <div style="margin-top: 1.5rem;">
+        <a href="/donate" class="btn btn--primary">Donate Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container prose">
+      <h2 class="text-center">Frequently Asked Questions</h2>
+
+      <div class="faq">
+        <h3>Where and when are the shows?</h3>
+        <p>
+          The <a href="https://www.wadsworthhomestead.com/" target="_blank" rel="noopener noreferrer">Wadsworth Homestead</a>,
+          located at 4 South Street in Geneseo, hosts all performances.
+          Gates open at 5:00 p.m., with opening acts typically performing 5:30&ndash;6:30 p.m.
+          and headliners at 7:00 p.m.
+        </p>
+
+        <h3>Do I need tickets or reservations?</h3>
+        <p>
+          Thanks to our generous sponsors and donors, the series is entirely free.
+          Reservations may be required for some shows due to capacity limitations.
+          Ticketing links will be posted as needed on our website and social media.
+        </p>
+
+        <h3>Are food and beverages available?</h3>
+        <p>
+          Yes. Alcoholic and non-alcoholic drinks are sold onsite. Food vendors include
+          Cosmic Charlie Cafe (burritos) and Wadsworth Grill (hamburgers/hot dogs).
+          Outside food and beverages are prohibited, except water.
+        </p>
+
+        <h3>Are shows family and pet friendly?</h3>
+        <p>
+          We welcome music lovers of all ages, with activities for children.
+          Free entry applies to those under 12. Only service animals per ADA
+          regulations are permitted.
+        </p>
+
+        <h3>What can I bring?</h3>
+        <p>
+          Blankets, lawn chairs, backpacks, sunscreen, phones, unopened water bottles,
+          and point-and-shoot cameras are allowed. Bottles, cans, weapons, professional
+          cameras, fireworks, and coolers are prohibited.
+        </p>
+
+        <h3>What happens in the event of rain?</h3>
+        <p>
+          A 250-person tent accommodates attendees during rain. Advance reservations
+          receive priority admission. Severe weather may result in postponement or
+          cancellation.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Wadsworth Partnership -->
+  <section class="section section--alt">
+    <div class="container prose" style="text-align: center;">
+      <h2>Thank You to the Wadsworth Homestead</h2>
+      <p>
+        We are grateful to the
+        <a href="https://www.wadsworthhomestead.com/" target="_blank" rel="noopener noreferrer">Wadsworth Homestead</a>,
+        which generously donates their venue free of charge to host our events.
+        The Wadsworth Homestead's beautiful grounds provide the perfect setting
+        for an evening of live music under the open sky.
+      </p>
+    </div>
+  </section>
+
+  <!-- Sponsors -->
+  <section class="section">
+    <div class="container">
+      <h2 class="text-center">Our Sponsors &amp; Donors</h2>
+
+      {sponsorLogos.length > 0 && (
+        <div class="sponsor-logos">
+          <h3 class="text-center">Corporate Sponsors</h3>
+          <div class="sponsor-logos__grid">
+            {sponsorLogos.map(logo => (
+              <div class="sponsor-logos__item">
+                <img src={`/images/sponsors/${logo}`} alt={sponsorLogoMap[logo] || logo.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ')} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {sponsorTiers.map(tier => (
+        <div class="sponsor-tier">
+          <h3>{tier.tier}</h3>
+          <p>{tier.names.join(' \u2022 ')}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lineup-image {
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .lineup-image img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .sponsor-logos {
+    margin-bottom: 2.5rem;
+  }
+
+  .sponsor-logos__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+
+  .sponsor-logos__item img {
+    max-height: 80px;
+    max-width: 180px;
+    object-fit: contain;
+  }
+
+  .sponsor-tier {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .sponsor-tier h3 {
+    margin-bottom: 0.5rem;
+    color: var(--color-sage);
+  }
+
+  .sponsor-tier p {
+    color: var(--color-text-light);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .faq {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .faq h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .faq h3:first-child {
+    margin-top: 0;
+  }
+
+  .faq p {
+    color: var(--color-text-light);
+  }
+</style>

@@ -1,0 +1,32 @@
+---
+interface Props {
+  date: string;
+  performer: string;
+  genre?: string;
+  time?: string;
+  description?: string;
+}
+
+const { date, performer, genre, time, description } = Astro.props;
+
+const dateObj = new Date(date + 'T12:00:00');
+const formattedDate = dateObj.toLocaleDateString('en-US', {
+  weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
+    <div>
+      <h3>{performer}</h3>
+      {genre && <p style="color: var(--color-sage); font-size: 0.9rem; margin-bottom: 0.25rem;">{genre}</p>}
+    </div>
+    <div style="text-align: right;">
+      <p style="font-weight: 600; color: var(--color-primary-accent);">{formattedDate}</p>
+      {time && <p style="font-size: 0.9rem; color: var(--color-text-light);">{time}</p>}
+    </div>
+  </div>
+  {description && <p style="margin-top: 0.75rem; color: var(--color-text-light); font-size: 0.95rem;">{description}</p>}
+</div>

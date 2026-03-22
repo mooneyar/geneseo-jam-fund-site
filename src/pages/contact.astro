@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
+---
+
+<BaseLayout title="Contact" description="Get in touch with the Geneseo Jam Fund. We'd love to hear from you.">
+  <div class="page-header">
+    <div class="container">
+      <h1>Contact Us</h1>
+      <p>We'd love to hear from you</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="prose text-center" style="margin-bottom: 2rem;">
+        <p>
+          Have a question, want to sponsor an event, or interested in partnering with us?
+          Fill out the form below and we'll get back to you as soon as we can.
+        </p>
+      </div>
+
+      <ContactForm />
+
+      <div class="text-center mt-4">
+        <p style="color: var(--color-text-light);">
+          You can also find us on
+          <a href="https://www.instagram.com/geneseojamfund/" target="_blank" rel="noopener noreferrer">Instagram</a>
+          and
+          <a href="https://www.facebook.com/geneseojamfund" target="_blank" rel="noopener noreferrer">Facebook</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

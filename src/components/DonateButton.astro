@@ -1,0 +1,15 @@
+---
+interface Props {
+  amount?: number;
+  label?: string;
+  url?: string;
+  variant?: 'primary' | 'gold' | 'outline';
+}
+
+const { amount, label, url = '#', variant = 'primary' } = Astro.props;
+const displayLabel = label || (amount ? `$${amount}` : 'Donate');
+---
+
+<a href={url} class:list={['btn', `btn--${variant}`]} target="_blank" rel="noopener noreferrer">
+  {displayLabel}
+</a>

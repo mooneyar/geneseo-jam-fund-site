@@ -1,0 +1,74 @@
+---
+const currentPath = Astro.url.pathname;
+
+const eventsSubpages = [
+  { href: '/sunset-concert-series', label: 'Sunset Concert Series' },
+  { href: '/tiny-gallery', label: 'Tiny Gallery Concerts' },
+  { href: '/events', label: 'Other Events' },
+];
+
+const isEventsActive = currentPath.startsWith('/sunset-concert-series')
+  || currentPath.startsWith('/tiny-gallery')
+  || currentPath.startsWith('/events');
+---
+
+<header class="site-header">
+  <nav class="nav">
+    <a href="/" class="nav__logo">
+      <img src="/images/logo.svg" alt="Geneseo Jam Fund logo" width="48" height="48" />
+      <div class="nav__logo-text">
+        Geneseo Jam Fund
+        <span>501(c)(3) Non-Profit</span>
+      </div>
+    </a>
+
+    <button class="nav__mobile-toggle" aria-label="Toggle navigation" id="nav-toggle">
+      &#9776;
+    </button>
+
+    <ul class="nav__links" id="nav-links">
+      <li>
+        <a href="/" class:list={[{ active: currentPath === '/' }]}>Home</a>
+      </li>
+      <li class="nav__dropdown">
+        <button class:list={['nav__dropdown-trigger', { active: isEventsActive }]}>
+          Events <span class="nav__caret">&#9662;</span>
+        </button>
+        <ul class="nav__dropdown-menu">
+          {eventsSubpages.map(({ href, label }) => (
+            <li>
+              <a href={href} class:list={[{ active: currentPath.startsWith(href) }]}>
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </li>
+      <li>
+        <a href="/photos" class:list={[{ active: currentPath.startsWith('/photos') }]}>Photos</a>
+      </li>
+      <li>
+        <a href="/about" class:list={[{ active: currentPath.startsWith('/about') }]}>About</a>
+      </li>
+      <li>
+        <a href="/donate" class:list={[{ active: currentPath.startsWith('/donate') }]}>Donate</a>
+      </li>
+      <li>
+        <a href="/contact" class:list={[{ active: currentPath.startsWith('/contact') }]}>Contact</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const links = document.getElementById('nav-links');
+  toggle?.addEventListener('click', () => links?.classList.toggle('open'));
+
+  // Mobile: toggle dropdown submenu on click
+  document.querySelectorAll('.nav__dropdown-trigger').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.parentElement?.classList.toggle('open');
+    });
+  });
+</script>

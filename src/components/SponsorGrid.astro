@@ -1,0 +1,107 @@
+---
+import yaml from 'js-yaml';
+import fs from 'node:fs';
+import path from 'node:path';
+
+interface Sponsor {
+  name: string;
+  tier: string;
+  logo?: string;
+  url?: string;
+}
+
+interface DonorTier {
+  tier: string;
+  min_amount: number;
+  names: string[];
+}
+
+const sponsorsPath = path.join(process.cwd(), 'src/data/sponsors.yaml');
+const donorsPath = path.join(process.cwd(), 'src/data/donors.yaml');
+
+let sponsors: Sponsor[] = [];
+let donors: DonorTier[] = [];
+
+try {
+  const sponsorsData = yaml.load(fs.readFileSync(sponsorsPath, 'utf8')) as { sponsors: Sponsor[] };
+  sponsors = sponsorsData.sponsors || [];
+} catch {}
+
+try {
+  const donorsData = yaml.load(fs.readFileSync(donorsPath, 'utf8')) as { donors: DonorTier[] };
+  donors = donorsData.donors || [];
+} catch {}
+
+const gold = sponsors.filter(s => s.tier === 'gold');
+const silver = sponsors.filter(s => s.tier === 'silver');
+const bronze = sponsors.filter(s => s.tier === 'bronze');
+---
+
+{sponsors.length > 0 && (
+  <div class="sponsor-section">
+    <h2 class="text-center">Our Sponsors</h2>
+
+    {gold.length > 0 && (
+      <div>
+        <h3>Gold Sponsors</h3>
+        <div class="sponsor-grid sponsor-grid--gold">
+          {gold.map(s => (
+            <div class="sponsor-item">
+              {s.logo ? (
+                <a href={s.url || '#'} target="_blank" rel="noopener noreferrer">
+                  <img src={s.logo} alt={s.name} />
+                </a>
+              ) : (
+                <span style="font-weight: 600; font-size: 1.1rem;">{s.name}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {silver.length > 0 && (
+      <div>
+        <h3>Silver Sponsors</h3>
+        <div class="sponsor-grid sponsor-grid--silver">
+          {silver.map(s => (
+            <div class="sponsor-item">
+              {s.logo ? (
+                <a href={s.url || '#'} target="_blank" rel="noopener noreferrer">
+                  <img src={s.logo} alt={s.name} />
+                </a>
+              ) : (
+                <span>{s.name}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {bronze.length > 0 && (
+      <div>
+        <h3>Bronze Sponsors</h3>
+        <div class="sponsor-grid sponsor-grid--bronze">
+          {bronze.map(s => (
+            <div class="sponsor-item">
+              <span>{s.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+)}
+
+{donors.length > 0 && (
+  <div class="donor-section">
+    <h2>Thank You to Our Donors</h2>
+    {donors.map(tier => (
+      <div class="donor-tier">
+        <h4>{tier.tier} (${tier.min_amount}+)</h4>
+        <p>{tier.names.join(' \u2022 ')}</p>
+      </div>
+    ))}
+  </div>
+)}

@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EventCard from '../components/EventCard.astro';
+import yaml from 'js-yaml';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Load the current year's concerts
+const concertPath = path.join(process.cwd(), 'src/data/concerts/2025.yaml');
+let concerts: any = { shows: [], year: 2025, dates_description: 'Summer 2025' };
+try {
+  concerts = yaml.load(fs.readFileSync(concertPath, 'utf8'));
+} catch {}
+
+const upcomingShows = concerts.shows
+  .filter((s: any) => new Date(s.date + 'T23:59:59') >= new Date())
+  .slice(0, 3);
+---
+
+<BaseLayout title="Home">
+  <!-- Hero: Drone photo as full-width opener -->
+  <section class="home-hero">
+    <div class="home-hero__image">
+      <img
+        src="/images/homestead-aerial.jpg"
+        alt="Aerial view of the Geneseo Jam Kitchen Homestead during a Sunset Concert Series event"
+      />
+    </div>
+    <div class="home-hero__overlay">
+      <img src="/images/logo.svg" alt="Geneseo Jam Fund" class="home-hero__logo" />
+      <h1>Geneseo Jam Fund</h1>
+      <p>
+        A 501(c)(3) non-profit bringing live music
+        to Geneseo, NY
+      </p>
+      <div class="home-hero__buttons">
+        <a href="/donate" class="btn btn--primary">Support Live Music</a>
+        <a href="/sunset-concert-series" class="btn btn--outline">See the Lineup</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission -->
+  <section class="section">
+    <div class="container text-center">
+      <h2>Our Mission</h2>
+      <p style="max-width: 720px; margin: 0 auto 1rem; font-size: 1.15rem; color: var(--color-text-light);">
+        Geneseo Jam Fund, a 501(c)(3) registered non-profit, aims to promote a live music culture in Geneseo, NY, that embraces musical diversity, community involvement, and artistic exploration by presenting high-quality musical performances that are inclusive, affordable, and accessible to the public.
+      </p>
+      <p style="max-width: 720px; margin: 0 auto; font-size: 1.15rem; color: var(--color-text-light);">
+        We seek support for our activities through local, state, and national public grants allocated to supporting music and the arts; donations from engaged and generous individuals in our community; and donations from corporations with a local presence.
+      </p>
+    </div>
+  </section>
+
+  <!-- Upcoming Events -->
+  {upcomingShows.length > 0 && (
+    <section class="section section--alt">
+      <div class="container">
+        <h2 class="text-center">Next Up: {concerts.dates_description}</h2>
+        <p class="text-center mb-3" style="color: var(--color-text-light);">
+          {concerts.series} at {concerts.venue}
+        </p>
+        <div class="event-grid">
+          {upcomingShows.map((show: any) => (
+            <EventCard
+              date={show.date}
+              performer={show.performer}
+              genre={show.genre}
+              time={show.time}
+              description={show.description}
+            />
+          ))}
+        </div>
+        <div class="text-center mt-4">
+          <a href="/sunset-concert-series" class="btn btn--gold">View Full Lineup</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Donate CTA -->
+  <section class="section">
+    <div class="container text-center">
+      <h2>Help Keep the Music Playing</h2>
+      <p style="max-width: 560px; margin: 0 auto 1.5rem; color: var(--color-text-light);">
+        Your tax-deductible donation supports free community concerts, fair pay for musicians,
+        and a thriving arts scene in Geneseo. Every dollar makes a difference.
+      </p>
+      <div class="donate-grid">
+        <a href="/donate" class="btn btn--primary">Donate Now</a>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--color-text-light); margin-top: 0.5rem;">
+        Geneseo Jam Fund is a 501(c)(3) organization. All donations are tax-deductible.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .home-hero {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .home-hero__image img {
+    width: 100%;
+    display: block;
+    max-height: 85vh;
+    object-fit: cover;
+  }
+
+  .home-hero__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.35) 50%,
+      rgba(0, 0, 0, 0.55) 100%
+    );
+  }
+
+  .home-hero__logo {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 1.25rem;
+    filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4));
+  }
+
+  .home-hero__overlay h1 {
+    color: white;
+    font-size: 3.2rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+  }
+
+  .home-hero__overlay p {
+    color: white;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .home-hero__buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    .home-hero__logo {
+      width: 110px;
+      height: 110px;
+    }
+
+    .home-hero__overlay h1 {
+      font-size: 2.2rem;
+    }
+
+    .home-hero__overlay p {
+      font-size: 1.1rem;
+    }
+  }
+</style>

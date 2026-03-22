@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Donate" description="Support the Geneseo Jam Fund with a tax-deductible donation. Your contribution keeps live music alive in Geneseo, NY.">
+  <div class="page-header">
+    <div class="container">
+      <h1>Support Live Music</h1>
+      <p>Every donation helps bring free concerts to our community</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container text-center">
+      <div class="prose" style="margin-bottom: 2.5rem;">
+        <p>
+          Your tax-deductible donation directly supports free community concerts, fair
+          musician pay, sound equipment, and the operations that make our events possible.
+          Whether it's $25 or $1,000, every contribution makes a real difference.
+        </p>
+      </div>
+
+      <h2>Donate Online</h2>
+      <p style="color: var(--color-text-light); margin-bottom: 1rem;">
+        Click any amount below to donate securely via Stripe.
+      </p>
+
+      <!-- Replace these # hrefs with actual Stripe Payment Links -->
+      <div class="donate-grid">
+        <a href="#" class="btn btn--primary">$25</a>
+        <a href="#" class="btn btn--primary">$50</a>
+        <a href="#" class="btn btn--primary">$100</a>
+        <a href="#" class="btn btn--gold">$250</a>
+        <a href="#" class="btn btn--gold">$1,000</a>
+        <a href="#" class="btn btn--outline" style="color: var(--color-primary-accent); border-color: var(--color-primary-accent);">Custom Amount</a>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--color-text-light); margin-top: 1.5rem;">
+        You will receive an automatic email receipt for your tax records.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container text-center prose">
+      <h2>Other Ways to Donate</h2>
+
+      <h3>Venmo</h3>
+      <p>
+        Send a donation via <strong>Venmo (@GeneseoJamFund)</strong>.
+      </p>
+
+      <h3>Check</h3>
+      <p>
+        Checks can be made payable to <strong>Geneseo Jam Fund Inc</strong> and mailed to:
+      </p>
+      <p>
+        <strong>Geneseo Jam Fund Inc</strong><br />
+        6 Oak St<br />
+        Geneseo, NY 14454
+      </p>
+
+      <h3>Appreciated Securities</h3>
+      <p>
+        We can even accept donations of appreciated securities &mdash; if this option interests you,
+        reach out to <a href="mailto:mooney@geneseojamfund.org">mooney@geneseojamfund.org</a>.
+      </p>
+
+      <h2 style="margin-top: 2.5rem;">Tax Deductibility</h2>
+      <p>
+        The Geneseo Jam Fund is a 501(c)(3) tax-exempt organization (EIN: 93-3285598).
+        No goods or services are provided in exchange for your contribution. All donations
+        are tax-deductible to the full extent of the law.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
