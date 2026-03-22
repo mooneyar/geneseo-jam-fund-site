@@ -1,21 +1,22 @@
 ---
+const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const eventsSubpages = [
-  { href: '/sunset-concert-series', label: 'Sunset Concert Series' },
-  { href: '/tiny-gallery', label: 'Tiny Gallery Concerts' },
-  { href: '/events', label: 'Other Events' },
+  { href: `${base}sunset-concert-series`, label: 'Sunset Concert Series' },
+  { href: `${base}tiny-gallery`, label: 'Tiny Gallery Concerts' },
+  { href: `${base}events`, label: 'Other Events' },
 ];
 
-const isEventsActive = currentPath.startsWith('/sunset-concert-series')
-  || currentPath.startsWith('/tiny-gallery')
-  || currentPath.startsWith('/events');
+const isEventsActive = currentPath.includes('/sunset-concert-series')
+  || currentPath.includes('/tiny-gallery')
+  || currentPath.includes('/events');
 ---
 
 <header class="site-header">
   <nav class="nav">
-    <a href="/" class="nav__logo">
-      <img src="/images/logo.svg" alt="Geneseo Jam Fund logo" width="48" height="48" />
+    <a href={base} class="nav__logo">
+      <img src={`${base}images/logo.svg`} alt="Geneseo Jam Fund logo" width="48" height="48" />
       <div class="nav__logo-text">
         Geneseo Jam Fund
         <span>501(c)(3) Non-Profit</span>
@@ -28,7 +29,7 @@ const isEventsActive = currentPath.startsWith('/sunset-concert-series')
 
     <ul class="nav__links" id="nav-links">
       <li>
-        <a href="/" class:list={[{ active: currentPath === '/' }]}>Home</a>
+        <a href={base} class:list={[{ active: currentPath === base || currentPath === base.slice(0, -1) }]}>Home</a>
       </li>
       <li class="nav__dropdown">
         <button class:list={['nav__dropdown-trigger', { active: isEventsActive }]}>
@@ -37,7 +38,7 @@ const isEventsActive = currentPath.startsWith('/sunset-concert-series')
         <ul class="nav__dropdown-menu">
           {eventsSubpages.map(({ href, label }) => (
             <li>
-              <a href={href} class:list={[{ active: currentPath.startsWith(href) }]}>
+              <a href={href} class:list={[{ active: currentPath.includes(href.replace(base, '/')) }]}>
                 {label}
               </a>
             </li>
@@ -45,16 +46,16 @@ const isEventsActive = currentPath.startsWith('/sunset-concert-series')
         </ul>
       </li>
       <li>
-        <a href="/photos" class:list={[{ active: currentPath.startsWith('/photos') }]}>Photos</a>
+        <a href={`${base}photos`} class:list={[{ active: currentPath.includes('/photos') }]}>Photos</a>
       </li>
       <li>
-        <a href="/about" class:list={[{ active: currentPath.startsWith('/about') }]}>About</a>
+        <a href={`${base}about`} class:list={[{ active: currentPath.includes('/about') }]}>About</a>
       </li>
       <li>
-        <a href="/donate" class:list={[{ active: currentPath.startsWith('/donate') }]}>Donate</a>
+        <a href={`${base}donate`} class:list={[{ active: currentPath.includes('/donate') }]}>Donate</a>
       </li>
       <li>
-        <a href="/contact" class:list={[{ active: currentPath.startsWith('/contact') }]}>Contact</a>
+        <a href={`${base}contact`} class:list={[{ active: currentPath.includes('/contact') }]}>Contact</a>
       </li>
     </ul>
   </nav>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout title="Events" description="Community music events sponsored and organized by the Geneseo Jam Fund.">
@@ -29,7 +30,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p>
         Looking to bring live music to your event, venue, or organization?
         The Geneseo Jam Fund can help with booking, promotion, and sound support.
-        <a href="/contact">Contact us</a> to discuss a partnership.
+        <a href={`${base}contact`}>Contact us</a> to discuss a partnership.
       </p>
 
       <h2>Past Highlights</h2>

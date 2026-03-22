@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 // Sponsor logo mappings: filename -> display name
+const base = import.meta.env.BASE_URL;
+
 const sponsorLogoMap: Record<string, string> = {
   'aes_logo.png': 'AES',
   'BARILLALOGO2021.png': 'Barilla',
@@ -93,7 +95,7 @@ const sponsorTiers = [
 <BaseLayout title="Sunset Concert Series" description="The Sunset Concert Series brings free live music to Geneseo, NY every summer.">
   <!-- Hero -->
   <section class="hero">
-    <div class="hero__bg" style="background-image: url('/images/sunset-series-header.jpg');"></div>
+    <div class="hero__bg" style={`background-image: url('${base}images/sunset-series-header.jpg');`}></div>
     <div class="hero__content">
       <h1>Sunset Concert Series</h1>
       <p>Free live music on the Wadsworth Homestead lawn on select Thursday evenings, all summer long</p>
@@ -120,7 +122,7 @@ const sponsorTiers = [
         to be the first to know when we announce next summer's lineup!
       </p>
       <div style="margin-top: 1.5rem;">
-        <a href="/donate" class="btn btn--primary">Donate Now</a>
+        <a href={`${base}donate`} class="btn btn--primary">Donate Now</a>
       </div>
     </div>
   </section>
@@ -202,7 +204,7 @@ const sponsorTiers = [
           <div class="sponsor-logos__grid">
             {sponsorLogos.map(logo => (
               <div class="sponsor-logos__item">
-                <img src={`/images/sponsors/${logo}`} alt={sponsorLogoMap[logo] || logo.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ')} />
+                <img src={`${base}images/sponsors/${logo}`} alt={sponsorLogoMap[logo] || logo.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ')} />
               </div>
             ))}
           </div>

@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="Tiny Gallery Concerts" description="Intimate acoustic performances in unique small venues around Geneseo, NY, in partnership with The Gallery in the Valley.">
   <section class="hero">
-    <div class="hero__bg" style="background-image: url('/images/tiny-gallery-header.jpg');"></div>
+    <div class="hero__bg" style={`background-image: url('${import.meta.env.BASE_URL}images/tiny-gallery-header.jpg');`}></div>
     <div class="hero__content">
       <h1>Tiny Gallery Concerts</h1>
       <p>Intimate performances in unique small spaces</p>
