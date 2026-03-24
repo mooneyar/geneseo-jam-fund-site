@@ -21,18 +21,36 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
 
       <h2>Donate Online</h2>
-      <p style="color: var(--color-text-light); margin-bottom: 1rem;">
+      <p style="color: var(--color-text-light); margin-bottom: 1.5rem;">
         Click any amount below to donate securely via Stripe.
       </p>
 
-      <!-- Replace these # hrefs with actual Stripe Payment Links -->
-      <div class="donate-grid">
-        <a href="https://donate.stripe.com/test_cNibIU2HRbIV9BqbsC7g400" class="btn btn--primary" target="_blank" rel="noopener">$25</a>
-        <a href="#" class="btn btn--primary">$50</a>
-        <a href="#" class="btn btn--primary">$100</a>
-        <a href="#" class="btn btn--gold">$250</a>
-        <a href="#" class="btn btn--gold">$1,000</a>
-        <a href="#" class="btn btn--outline" style="color: var(--color-primary-accent); border-color: var(--color-primary-accent);">Custom Amount</a>
+      <div class="donate-tiers">
+        <p class="donate-tier-label">Jam Friend</p>
+        <div class="donate-grid">
+          <a href="https://buy.stripe.com/9B6aEY1ym1oyaCifdZgIo03" class="btn btn--primary" target="_blank" rel="noopener">$10</a>
+          <a href="https://donate.stripe.com/test_cNibIU2HRbIV9BqbsC7g400" class="btn btn--primary" target="_blank" rel="noopener">$25</a>
+          <a href="https://buy.stripe.com/dRm14oel82sCdOud5RgIo07" class="btn btn--primary" target="_blank" rel="noopener">$50</a>
+        </div>
+
+        <p class="donate-tier-label">Front Row Jam Friend</p>
+        <div class="donate-grid">
+          <a href="https://buy.stripe.com/bJe3cw90O6IS7q6gi3gIo05" class="btn btn--primary" target="_blank" rel="noopener">$100</a>
+        </div>
+
+        <p class="donate-tier-label">Touring Jam Friend</p>
+        <div class="donate-grid">
+          <a href="https://buy.stripe.com/6oUcN6dh47MW11IaXJgIo04" class="btn btn--gold" target="_blank" rel="noopener">$250</a>
+        </div>
+
+        <p class="donate-tier-label">Jam Friend Superstar</p>
+        <div class="donate-grid">
+          <a href="https://buy.stripe.com/3cI28s7WKaZ87q60j5gIo06" class="btn btn--gold" target="_blank" rel="noopener">$1,000</a>
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <a href="https://donate.stripe.com/cNi8wQb8W5EOaCi8PBgIo02" class="btn btn--outline" style="color: var(--color-primary-accent); border-color: var(--color-primary-accent);" target="_blank" rel="noopener">Custom Amount</a>
+        </div>
       </div>
 
       <p style="font-size: 0.85rem; color: var(--color-text-light); margin-top: 1.5rem;">
@@ -42,6 +60,47 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </section>
 
   <section class="section section--alt">
+    <div class="container text-center prose">
+      <h2>What Your Donation Gets You</h2>
+      <div class="tier-table">
+        <div class="tier-row">
+          <div class="tier-name">Jam Friend</div>
+          <div class="tier-amount">$10+</div>
+          <div class="tier-perks">Listed on website + sticker</div>
+        </div>
+        <div class="tier-row">
+          <div class="tier-name">Front Row Jam Friend</div>
+          <div class="tier-amount">$100+</div>
+          <div class="tier-perks">Website listing + t-shirt and sticker</div>
+        </div>
+        <div class="tier-row">
+          <div class="tier-name">Touring Jam Friend</div>
+          <div class="tier-amount">$250+</div>
+          <div class="tier-perks">Website listing + blanket, t-shirt, and sticker</div>
+        </div>
+        <div class="tier-row tier-row--highlight">
+          <div class="tier-name">Jam Friend Rock Star</div>
+          <div class="tier-amount">$500+</div>
+          <div class="tier-perks">Website listing + all merch</div>
+        </div>
+        <div class="tier-row tier-row--highlight">
+          <div class="tier-name">Jam Friend Superstar</div>
+          <div class="tier-amount">$1,000+</div>
+          <div class="tier-perks">Website listing + complete merch package</div>
+        </div>
+        <div class="tier-row tier-row--highlight">
+          <div class="tier-name">Jam Friend Legend</div>
+          <div class="tier-amount">$5,000+</div>
+          <div class="tier-perks">Website listing + full merch bundle</div>
+        </div>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--color-text-light); margin-top: 1rem;">
+        Present your donation receipt at any show to collect your merch.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
     <div class="container text-center prose">
       <h2>Other Ways to Donate</h2>
 
@@ -75,3 +134,81 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .donate-tiers {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .donate-tier-label {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .tier-table {
+    max-width: 600px;
+    margin: 1.5rem auto 0;
+    text-align: left;
+  }
+
+  .tier-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-cream-dark);
+  }
+
+  .tier-row:last-child {
+    border-bottom: none;
+  }
+
+  .tier-row--highlight {
+    background-color: rgba(196, 162, 78, 0.08);
+  }
+
+  .tier-name {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    font-size: 0.95rem;
+  }
+
+  .tier-amount {
+    font-weight: 700;
+    color: var(--color-gold);
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  .tier-perks {
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    text-align: right;
+  }
+
+  @media (max-width: 768px) {
+    .tier-row {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+      text-align: center;
+      padding: 0.75rem 0.5rem;
+    }
+
+    .tier-perks {
+      text-align: center;
+    }
+
+    .tier-amount {
+      text-align: center;
+    }
+  }
+</style>
