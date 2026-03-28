@@ -1,5 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL;
+
+const sponsorLogoMap: Record<string, string> = {
+  'BARILLALOGO2021.png': 'Barilla',
+  'aes_logo.png': 'AES',
+  'gvca_logo.png': 'Genesee Valley Council on the Arts',
+  'p_and_cg.ai.jpg': 'Power and Construction Group',
+  'wegmans.png': 'Wegmans',
+};
 ---
 
 <BaseLayout title="Donate" description="Support the Geneseo Jam Fund with a tax-deductible donation. Your contribution keeps live music alive in Geneseo, NY.">
@@ -133,6 +142,46 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </p>
     </div>
   </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <h2 class="text-center">2026 Sponsors &amp; Donors</h2>
+      <p class="text-center" style="color: var(--color-text-light); max-width: 520px; margin: 0 auto 1.5rem;">
+        We're currently seeking sponsors for the 2026 season. Interested in supporting
+        the series? <a href="mailto:mooney@geneseojamfund.org">Get in touch</a>.
+      </p>
+
+      <div class="sponsor-logos">
+        <div class="sponsor-logos__grid">
+          {['BARILLALOGO2021.png', 'aes_logo.png', 'gvca_logo.png', 'p_and_cg.ai.jpg', 'wegmans.png'].map(logo => (
+            <div class="sponsor-logos__item">
+              <img src={`${base}images/sponsors/${logo}`} alt={sponsorLogoMap[logo] || logo} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="sponsor-tier">
+        <h3>Legends</h3>
+        <p>Barilla &bull; Genesee Valley Council on the Arts</p>
+      </div>
+      <div class="sponsor-tier">
+        <h3>Superstars</h3>
+        <p>AES &bull; Power and Construction Group</p>
+      </div>
+      <div class="sponsor-tier">
+        <h3>Rock Stars</h3>
+        <p>Wegmans</p>
+      </div>
+
+      <p class="text-center" style="font-size: 0.85rem; color: var(--color-text-light); max-width: 580px; margin: 2rem auto 0; font-style: italic;">
+        This project is made possible with funds from the Statewide Community Regrants Program,
+        a regrant program of the New York State Council on the Arts with the support of The Office
+        of the Governor and the New York State Legislature and administered by the Genesee Valley
+        Council on the Arts.
+      </p>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
@@ -193,6 +242,41 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: var(--color-text-light);
     font-size: 0.9rem;
     text-align: right;
+  }
+
+  .sponsor-logos {
+    margin-bottom: 2.5rem;
+  }
+
+  .sponsor-logos__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+
+  .sponsor-logos__item img {
+    max-height: 80px;
+    max-width: 180px;
+    object-fit: contain;
+  }
+
+  .sponsor-tier {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .sponsor-tier h3 {
+    margin-bottom: 0.5rem;
+    color: var(--color-sage);
+  }
+
+  .sponsor-tier p {
+    color: var(--color-text-light);
+    font-size: 1rem;
+    line-height: 1.6;
   }
 
   @media (max-width: 768px) {
