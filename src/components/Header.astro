@@ -5,12 +5,10 @@ const currentPath = Astro.url.pathname;
 const eventsSubpages = [
   { href: `${base}sunset-concert-series`, label: 'Sunset Concert Series' },
   { href: `${base}tiny-gallery`, label: 'Tiny Gallery Concerts' },
-  { href: `${base}events`, label: 'Other Events' },
 ];
 
 const isEventsActive = currentPath.includes('/sunset-concert-series')
-  || currentPath.includes('/tiny-gallery')
-  || currentPath.includes('/events');
+  || currentPath.includes('/tiny-gallery');
 ---
 
 <header class="site-header">
