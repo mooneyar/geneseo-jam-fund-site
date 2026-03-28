@@ -1,8 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://mooneyar.github.io',
-  base: '/geneseo-jam-fund-site/',
+  site: 'https://geneseojamfund.org',
   build: {
     assets: '_assets',
   },
