@@ -21,22 +21,24 @@ const base = import.meta.env.BASE_URL;
         enriches the quality of life for everyone.
       </p>
 
-      <h2 style="text-align: center;">Doing More Together</h2>
-      <div class="doing-more-logos">
-        <img src={`${base}images/logo.svg`} alt="Geneseo Jam Fund" class="doing-more-logo" />
-        <span class="doing-more-plus">&times;</span>
-        <img src={`${base}images/jam-kitchen-logo.png`} alt="Geneseo Jam Kitchen" class="doing-more-logo" />
+      <div class="doing-more-box">
+        <h2 style="text-align: center;">Doing More Together</h2>
+        <div class="doing-more-logos">
+          <img src={`${base}images/logo.svg`} alt="Geneseo Jam Fund" class="doing-more-logo" />
+          <span class="doing-more-plus">&times;</span>
+          <img src={`${base}images/jam-kitchen-logo.png`} alt="Geneseo Jam Kitchen" class="doing-more-logo" />
+        </div>
+        <p>
+          The Geneseo Jam Fund extends the mission of
+          <a href="https://www.geneseojamkitchen.com" target="_blank" rel="noopener noreferrer">Geneseo Jam Kitchen</a>,
+          a local concert production company, to deliver quality live music to the people of
+          Livingston County. As a charitable organization, Geneseo Jam Fund prioritizes
+          community-oriented and accessible programming.
+          Through the Sunset Concert Series, Tiny Gallery Concerts, and other events, we
+          bring free and accessible live music to the community while ensuring fair
+          compensation for the musicians who make it all possible.
+        </p>
       </div>
-      <p>
-        The Geneseo Jam Fund extends the mission of
-        <a href="https://www.geneseojamkitchen.com" target="_blank" rel="noopener noreferrer">Geneseo Jam Kitchen</a>,
-        a local concert production company, to deliver quality live music to the people of
-        Livingston County. As a charitable organization, Geneseo Jam Fund prioritizes
-        community-oriented and accessible programming.
-        Through the Sunset Concert Series, Tiny Gallery Concerts, and other events, we
-        bring free and accessible live music to the community while ensuring fair
-        compensation for the musicians who make it all possible.
-      </p>
 
       <h2>Board of Directors</h2>
       <p>
@@ -66,6 +68,22 @@ const base = import.meta.env.BASE_URL;
 </BaseLayout>
 
 <style>
+  .doing-more-box {
+    background-color: var(--color-surface);
+    border-radius: 10px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .doing-more-box h2 {
+    margin-top: 0;
+  }
+
+  .doing-more-box p {
+    margin-bottom: 0;
+  }
+
   .doing-more-logos {
     display: flex;
     align-items: center;
