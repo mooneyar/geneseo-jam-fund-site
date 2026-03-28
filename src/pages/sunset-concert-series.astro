@@ -202,6 +202,36 @@ const sponsorTiers = [
         We're currently seeking sponsors for the 2026 season. Interested in supporting
         the series? <a href="mailto:mooney@geneseojamfund.org">Get in touch</a>.
       </p>
+
+      <div class="sponsor-logos">
+        <div class="sponsor-logos__grid">
+          {['BARILLALOGO2021.png', 'aes_logo.png', 'gvca_logo.png', 'p_and_cg.ai.jpg', 'wegmans.png'].map(logo => (
+            <div class="sponsor-logos__item">
+              <img src={`${base}images/sponsors/${logo}`} alt={sponsorLogoMap[logo] || logo} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="sponsor-tier">
+        <h3>Legends</h3>
+        <p>Barilla &bull; Genesee Valley Council on the Arts</p>
+      </div>
+      <div class="sponsor-tier">
+        <h3>Superstars</h3>
+        <p>AES &bull; Power and Construction Group</p>
+      </div>
+      <div class="sponsor-tier">
+        <h3>Rock Stars</h3>
+        <p>Wegmans</p>
+      </div>
+
+      <p class="text-center" style="font-size: 0.85rem; color: var(--color-text-light); max-width: 580px; margin: 2rem auto 0; font-style: italic;">
+        This project is made possible with funds from the Statewide Community Regrants Program,
+        a regrant program of the New York State Council on the Arts with the support of The Office
+        of the Governor and the New York State Legislature and administered by the Genesee Valley
+        Council on the Arts.
+      </p>
     </div>
   </section>
 
