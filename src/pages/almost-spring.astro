@@ -1,0 +1,898 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="Strawberry Catcher" description="A very serious 8-bit game from the Geneseo Jam Fund. Catch strawberries in a mason jar!">
+  <div class="game-page">
+    <div class="game-wrapper">
+      <canvas id="game-canvas" width="400" height="600"></canvas>
+      <button id="sound-toggle" title="Toggle sound">🔇</button>
+    </div>
+    <p class="game-instructions">
+      <strong>Arrow keys</strong> or <strong>tap left/right</strong> to move the jar. Catch strawberries, avoid rotten ones!
+    </p>
+    <p class="game-back">
+      <a href={`${base}`}>&larr; Back to the real site</a>
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .game-page {
+    background: #1a1a2e;
+    min-height: calc(100vh - var(--nav-height));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .game-wrapper {
+    position: relative;
+    line-height: 0;
+  }
+
+  #game-canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    border: 3px solid #3b4417;
+    border-radius: 4px;
+    max-width: min(400px, calc(100vw - 2rem));
+    max-height: calc(100vh - var(--nav-height) - 140px);
+    width: auto;
+    height: auto;
+    touch-action: none;
+    cursor: pointer;
+  }
+
+  #sound-toggle {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(245, 241, 232, 0.3);
+    border-radius: 4px;
+    color: #f5f1e8;
+    font-size: 1.2rem;
+    padding: 4px 6px;
+    cursor: pointer;
+    z-index: 10;
+    line-height: 1;
+  }
+
+  #sound-toggle:hover {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .game-instructions {
+    color: rgba(245, 241, 232, 0.6);
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+    text-align: center;
+  }
+
+  .game-back {
+    margin-top: 0.5rem;
+  }
+
+  .game-back a {
+    color: var(--color-gold);
+    font-size: 0.85rem;
+  }
+</style>
+
+<script>
+(function () {
+  const canvas = document.getElementById('game-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+  const soundBtn = document.getElementById('sound-toggle')!;
+
+  const W = 400, H = 600;
+  const PX = 4; // pixel scale
+
+  // --- Colors (from site palette) ---
+  const C = {
+    bg: '#2d3a1e',
+    red: '#a3423a',
+    redDark: '#8f362c',
+    green: '#3b4417',
+    sage: '#7a8455',
+    gold: '#c4a24e',
+    goldLight: '#d9bc81',
+    cream: '#f5f1e8',
+    navy: '#161628',
+    brown: '#5a4a3a',
+    brownDark: '#3a3a2a',
+    rotGreen: '#6a7a3a',
+  };
+
+  // --- Pixel font (3x5 glyphs) ---
+  const FONT: Record<string, number[]> = {
+    '0': [1,1,1, 1,0,1, 1,0,1, 1,0,1, 1,1,1],
+    '1': [0,1,0, 1,1,0, 0,1,0, 0,1,0, 1,1,1],
+    '2': [1,1,1, 0,0,1, 1,1,1, 1,0,0, 1,1,1],
+    '3': [1,1,1, 0,0,1, 1,1,1, 0,0,1, 1,1,1],
+    '4': [1,0,1, 1,0,1, 1,1,1, 0,0,1, 0,0,1],
+    '5': [1,1,1, 1,0,0, 1,1,1, 0,0,1, 1,1,1],
+    '6': [1,1,1, 1,0,0, 1,1,1, 1,0,1, 1,1,1],
+    '7': [1,1,1, 0,0,1, 0,1,0, 0,1,0, 0,1,0],
+    '8': [1,1,1, 1,0,1, 1,1,1, 1,0,1, 1,1,1],
+    '9': [1,1,1, 1,0,1, 1,1,1, 0,0,1, 1,1,1],
+    'A': [0,1,0, 1,0,1, 1,1,1, 1,0,1, 1,0,1],
+    'B': [1,1,0, 1,0,1, 1,1,0, 1,0,1, 1,1,0],
+    'C': [0,1,1, 1,0,0, 1,0,0, 1,0,0, 0,1,1],
+    'D': [1,1,0, 1,0,1, 1,0,1, 1,0,1, 1,1,0],
+    'E': [1,1,1, 1,0,0, 1,1,0, 1,0,0, 1,1,1],
+    'F': [1,1,1, 1,0,0, 1,1,0, 1,0,0, 1,0,0],
+    'G': [0,1,1, 1,0,0, 1,0,1, 1,0,1, 0,1,1],
+    'H': [1,0,1, 1,0,1, 1,1,1, 1,0,1, 1,0,1],
+    'I': [1,1,1, 0,1,0, 0,1,0, 0,1,0, 1,1,1],
+    'J': [0,0,1, 0,0,1, 0,0,1, 1,0,1, 0,1,0],
+    'K': [1,0,1, 1,0,1, 1,1,0, 1,0,1, 1,0,1],
+    'L': [1,0,0, 1,0,0, 1,0,0, 1,0,0, 1,1,1],
+    'M': [1,0,1, 1,1,1, 1,0,1, 1,0,1, 1,0,1],
+    'N': [1,0,1, 1,1,1, 1,1,1, 1,0,1, 1,0,1],
+    'O': [0,1,0, 1,0,1, 1,0,1, 1,0,1, 0,1,0],
+    'P': [1,1,0, 1,0,1, 1,1,0, 1,0,0, 1,0,0],
+    'Q': [0,1,0, 1,0,1, 1,0,1, 1,1,0, 0,1,1],
+    'R': [1,1,0, 1,0,1, 1,1,0, 1,0,1, 1,0,1],
+    'S': [0,1,1, 1,0,0, 0,1,0, 0,0,1, 1,1,0],
+    'T': [1,1,1, 0,1,0, 0,1,0, 0,1,0, 0,1,0],
+    'U': [1,0,1, 1,0,1, 1,0,1, 1,0,1, 0,1,0],
+    'V': [1,0,1, 1,0,1, 1,0,1, 0,1,0, 0,1,0],
+    'W': [1,0,1, 1,0,1, 1,0,1, 1,1,1, 1,0,1],
+    'X': [1,0,1, 1,0,1, 0,1,0, 1,0,1, 1,0,1],
+    'Y': [1,0,1, 1,0,1, 0,1,0, 0,1,0, 0,1,0],
+    'Z': [1,1,1, 0,0,1, 0,1,0, 1,0,0, 1,1,1],
+    ' ': [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0],
+    ':': [0,0,0, 0,1,0, 0,0,0, 0,1,0, 0,0,0],
+    '!': [0,1,0, 0,1,0, 0,1,0, 0,0,0, 0,1,0],
+    '-': [0,0,0, 0,0,0, 1,1,1, 0,0,0, 0,0,0],
+    '+': [0,0,0, 0,1,0, 1,1,1, 0,1,0, 0,0,0],
+  };
+
+  function drawText(text: string, x: number, y: number, scale: number, color: string) {
+    ctx.fillStyle = color;
+    const chars = text.toUpperCase().split('');
+    let cx = x;
+    for (const ch of chars) {
+      const glyph = FONT[ch];
+      if (glyph) {
+        for (let row = 0; row < 5; row++) {
+          for (let col = 0; col < 3; col++) {
+            if (glyph[row * 3 + col]) {
+              ctx.fillRect(cx + col * scale, y + row * scale, scale, scale);
+            }
+          }
+        }
+      }
+      cx += 4 * scale;
+    }
+  }
+
+  function textWidth(text: string, scale: number): number {
+    return text.length * 4 * scale - scale;
+  }
+
+  function drawTextCentered(text: string, y: number, scale: number, color: string) {
+    const w = textWidth(text, scale);
+    drawText(text, Math.floor((W - w) / 2), y, scale, color);
+  }
+
+  // --- Sprite definitions ---
+  // Each sprite is rows of color values, null = transparent
+  type Sprite = (string | null)[][];
+
+  const _ = null;
+  const R = C.red, RD = C.redDark, G = C.green, S = C.sage, GL = C.goldLight, GD = C.gold;
+
+  const STRAWBERRY: Sprite = [
+    [_,_,_,G,_,_,_,_],
+    [_,_,G,G,G,_,_,_],
+    [_,S,G,S,G,S,_,_],
+    [_,_,R,R,R,_,_,_],
+    [_,R,R,GL,R,R,_,_],
+    [_,R,GL,R,R,R,_,_],
+    [R,R,R,R,GL,R,R,_],
+    [R,GL,R,R,R,GL,R,_],
+    [_,R,R,GL,R,R,_,_],
+    [_,_,R,R,R,_,_,_],
+  ];
+
+  const GOLDEN_STRAWBERRY: Sprite = STRAWBERRY.map(row =>
+    row.map(c => c === R ? GD : c === RD ? GD : c === GL ? C.cream : c)
+  );
+
+  const ROTTEN_STRAWBERRY: Sprite = [
+    [_,_,_,C.brownDark,_,_,_,_],
+    [_,_,C.brownDark,C.brownDark,C.brownDark,_,_,_],
+    [_,C.rotGreen,C.brownDark,C.rotGreen,C.brownDark,C.rotGreen,_,_],
+    [_,_,C.brown,C.brown,C.brown,_,_,_],
+    [_,C.brown,C.brown,C.brownDark,C.brown,C.brown,_,_],
+    [_,C.brown,C.brownDark,C.brown,C.brown,C.brown,_,_],
+    [C.brown,C.brown,C.brown,C.brown,C.brownDark,C.brown,C.brown,_],
+    [C.brown,C.brownDark,C.brown,C.brown,C.brown,C.brownDark,C.brown,_],
+    [_,C.brown,C.brown,C.brownDark,C.brown,C.brown,_,_],
+    [_,_,C.brown,C.brown,C.brown,_,_,_],
+  ];
+
+  const MUSIC_NOTE: Sprite = [
+    [_,_,_,GD,GD,_],
+    [_,_,_,GD,_,_],
+    [_,_,_,GD,_,_],
+    [_,_,_,GD,_,_],
+    [_,_,_,GD,_,_],
+    [_,GD,GD,GD,_,_],
+    [GD,GD,GD,_,_,_],
+    [_,GD,_,_,_,_],
+  ];
+
+  // Mason jar (player)
+  const CR = C.cream, NV = C.navy, SF = '#ddd8cc';
+  const JAR: Sprite = [
+    [_,_,NV,NV,NV,NV,NV,NV,NV,NV,_,_],
+    [_,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,_],
+    [_,_,NV,CR,CR,CR,CR,CR,CR,NV,_,_],
+    [_,_,NV,CR,CR,CR,CR,CR,CR,NV,_,_],
+    [_,_,NV,CR,SF,CR,CR,SF,CR,NV,_,_],
+    [_,_,NV,CR,CR,CR,CR,CR,CR,NV,_,_],
+    [_,_,NV,CR,SF,CR,SF,CR,CR,NV,_,_],
+    [_,_,NV,CR,CR,CR,CR,CR,CR,NV,_,_],
+    [_,_,_,NV,NV,NV,NV,NV,NV,_,_,_],
+  ];
+
+  const JAR_WIDE: Sprite = [
+    [_,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,_],
+    [NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV],
+    [_,NV,CR,CR,CR,CR,CR,CR,CR,CR,CR,CR,CR,NV,_],
+    [_,NV,CR,CR,CR,CR,CR,CR,CR,CR,CR,CR,CR,NV,_],
+    [_,NV,CR,SF,CR,CR,SF,CR,CR,SF,CR,CR,CR,NV,_],
+    [_,NV,CR,CR,CR,CR,CR,CR,CR,CR,CR,CR,CR,NV,_],
+    [_,NV,CR,SF,CR,SF,CR,CR,SF,CR,SF,CR,CR,NV,_],
+    [_,NV,CR,CR,CR,CR,CR,CR,CR,CR,CR,CR,CR,NV,_],
+    [_,_,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,NV,_,_],
+  ];
+
+  // Mini strawberry for lives display
+  const MINI_BERRY: Sprite = [
+    [_,G,_],
+    [R,R,R],
+    [R,GL,R],
+    [_,R,_],
+  ];
+
+  function drawSprite(sprite: Sprite, x: number, y: number, scale: number = PX) {
+    for (let row = 0; row < sprite.length; row++) {
+      for (let col = 0; col < sprite[row].length; col++) {
+        const c = sprite[row][col];
+        if (c) {
+          ctx.fillStyle = c;
+          ctx.fillRect(
+            Math.floor(x + col * scale),
+            Math.floor(y + row * scale),
+            scale, scale
+          );
+        }
+      }
+    }
+  }
+
+  // --- Sound ---
+  let audioCtx: AudioContext | null = null;
+
+  function ensureAudio() {
+    if (!audioCtx) {
+      audioCtx = new AudioContext();
+    }
+    return audioCtx;
+  }
+
+  function playSound(type: string) {
+    if (!state.soundEnabled) return;
+    const ac = ensureAudio();
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.connect(gain);
+    gain.connect(ac.destination);
+    const now = ac.currentTime;
+
+    switch (type) {
+      case 'catch':
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.linearRampToValueAtTime(800, now + 0.08);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.1);
+        break;
+      case 'golden':
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(500, now);
+        osc.frequency.setValueAtTime(700, now + 0.08);
+        osc.frequency.setValueAtTime(900, now + 0.16);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+        break;
+      case 'powerup':
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.linearRampToValueAtTime(1200, now + 0.2);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+        break;
+      case 'rotten':
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.linearRampToValueAtTime(80, now + 0.2);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+        break;
+      case 'miss':
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.linearRampToValueAtTime(100, now + 0.15);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.2);
+        osc.start(now);
+        osc.stop(now + 0.2);
+        break;
+      case 'gameover':
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.setValueAtTime(300, now + 0.15);
+        osc.frequency.setValueAtTime(200, now + 0.3);
+        osc.frequency.setValueAtTime(100, now + 0.45);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.6);
+        osc.start(now);
+        osc.stop(now + 0.6);
+        break;
+      case 'levelup':
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.setValueAtTime(500, now + 0.1);
+        osc.frequency.setValueAtTime(700, now + 0.2);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+        break;
+    }
+  }
+
+  // --- Game State ---
+  interface FallingItem {
+    x: number;
+    y: number;
+    type: 'strawberry' | 'golden' | 'rotten' | 'music';
+    speed: number;
+    drift: number;
+  }
+
+  interface Particle {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    life: number;
+    maxLife: number;
+    color: string;
+  }
+
+  const HS_KEY = 'gjf-strawberry-catcher-hs';
+
+  const state = {
+    screen: 'title' as 'title' | 'playing' | 'gameover',
+    score: 0,
+    highScore: parseInt(localStorage.getItem(HS_KEY) || '0'),
+    lives: 3,
+    level: 1,
+    playerX: W / 2,
+    playerWidth: 48,
+    powerUpTimer: 0,
+    items: [] as FallingItem[],
+    particles: [] as Particle[],
+    frameCount: 0,
+    spawnTimer: 0,
+    soundEnabled: false,
+    keys: { left: false, right: false },
+    touch: { active: false, side: '' as '' | 'left' | 'right' },
+    flashTimer: 0,
+    flashColor: '',
+    levelUpTimer: 0,
+    newHighScore: false,
+    titleBerryY: 0,
+    titleBerryDir: 1,
+  };
+
+  function resetGame() {
+    state.score = 0;
+    state.lives = 3;
+    state.level = 1;
+    state.playerX = W / 2;
+    state.playerWidth = 48;
+    state.powerUpTimer = 0;
+    state.items = [];
+    state.particles = [];
+    state.frameCount = 0;
+    state.spawnTimer = 0;
+    state.flashTimer = 0;
+    state.levelUpTimer = 0;
+    state.newHighScore = false;
+  }
+
+  // --- Difficulty ---
+  function getLevel(): number {
+    if (state.score < 50) return 1;
+    if (state.score < 150) return 2;
+    if (state.score < 300) return 3;
+    if (state.score < 500) return 4;
+    return 5 + Math.floor((state.score - 500) / 200);
+  }
+
+  function getSpawnInterval(): number {
+    return Math.max(60, 120 - state.level * 10);
+  }
+
+  function getFallSpeed(): number {
+    return Math.min(5, 1.8 + state.level * 0.4);
+  }
+
+  function spawnItem() {
+    const lvl = state.level;
+    const rand = Math.random();
+    let type: FallingItem['type'] = 'strawberry';
+
+    if (lvl >= 4 && rand < 0.08) type = 'music';
+    else if (lvl >= 3 && rand < 0.15) type = 'golden';
+    else if (lvl >= 2 && rand < 0.25) type = 'rotten';
+
+    const itemW = type === 'music' ? 6 * PX : 8 * PX;
+    const x = Math.floor(Math.random() * (W - itemW - 16)) + 8;
+    const speed = getFallSpeed() + (Math.random() - 0.5) * 0.5;
+    const drift = lvl >= 3 ? (Math.random() - 0.5) * 0.8 : 0;
+
+    state.items.push({ x, y: -40, type, speed, drift });
+  }
+
+  function spawnParticles(x: number, y: number, color: string, count: number) {
+    for (let i = 0; i < count; i++) {
+      state.particles.push({
+        x, y,
+        vx: (Math.random() - 0.5) * 4,
+        vy: (Math.random() - 1) * 3,
+        life: 25 + Math.random() * 10,
+        maxLife: 35,
+        color,
+      });
+    }
+  }
+
+  // --- Collision ---
+  function checkCatch(item: FallingItem): boolean {
+    const jarTop = H - 50;
+    const jarLeft = state.playerX - state.playerWidth / 2;
+    const jarRight = state.playerX + state.playerWidth / 2;
+    const itemW = item.type === 'music' ? 6 * PX : 8 * PX;
+    const itemH = item.type === 'music' ? 8 * PX : 10 * PX;
+    const itemCX = item.x + itemW / 2;
+    const itemBottom = item.y + itemH;
+
+    return itemCX > jarLeft && itemCX < jarRight &&
+           itemBottom > jarTop && itemBottom < jarTop + 20;
+  }
+
+  // --- Update ---
+  function update(dt: number) {
+    if (state.screen !== 'playing') return;
+
+    const speed = 4 * dt;
+
+    // Player movement
+    if (state.keys.left || state.touch.side === 'left') {
+      state.playerX -= speed;
+    }
+    if (state.keys.right || state.touch.side === 'right') {
+      state.playerX += speed;
+    }
+    state.playerX = Math.max(state.playerWidth / 2 + 4, Math.min(W - state.playerWidth / 2 - 4, state.playerX));
+
+    // Power-up timer
+    if (state.powerUpTimer > 0) {
+      state.powerUpTimer -= dt;
+      state.playerWidth = 60;
+      if (state.powerUpTimer <= 0) {
+        state.playerWidth = 48;
+      }
+    }
+
+    // Spawn items
+    state.spawnTimer -= dt;
+    if (state.spawnTimer <= 0) {
+      spawnItem();
+      state.spawnTimer = getSpawnInterval();
+    }
+
+    // Update items
+    for (let i = state.items.length - 1; i >= 0; i--) {
+      const item = state.items[i];
+      item.y += item.speed * dt;
+      item.x += item.drift * dt;
+      // Keep in bounds horizontally
+      if (item.x < 4) { item.x = 4; item.drift = Math.abs(item.drift); }
+      if (item.x > W - 36) { item.x = W - 36; item.drift = -Math.abs(item.drift); }
+
+      // Check catch
+      if (checkCatch(item)) {
+        state.items.splice(i, 1);
+        switch (item.type) {
+          case 'strawberry':
+            state.score += 10;
+            spawnParticles(item.x + 16, item.y + 20, C.red, 6);
+            playSound('catch');
+            break;
+          case 'golden':
+            state.score += 50;
+            spawnParticles(item.x + 16, item.y + 20, C.gold, 10);
+            playSound('golden');
+            break;
+          case 'music':
+            state.score += 25;
+            state.powerUpTimer = 5;
+            state.playerWidth = 60;
+            spawnParticles(item.x + 12, item.y + 16, C.gold, 8);
+            playSound('powerup');
+            break;
+          case 'rotten':
+            state.lives--;
+            state.flashTimer = 12;
+            state.flashColor = C.brown;
+            spawnParticles(item.x + 16, item.y + 20, C.brownDark, 6);
+            playSound('rotten');
+            break;
+        }
+        // Level check
+        const newLevel = getLevel();
+        if (newLevel > state.level) {
+          state.level = newLevel;
+          state.levelUpTimer = 90;
+          playSound('levelup');
+        }
+        continue;
+      }
+
+      // Missed (fell off bottom)
+      if (item.y > H + 10) {
+        state.items.splice(i, 1);
+        if (item.type === 'strawberry') {
+          state.lives--;
+          state.flashTimer = 12;
+          state.flashColor = C.red;
+          playSound('miss');
+        }
+      }
+    }
+
+    // Update particles
+    for (let i = state.particles.length - 1; i >= 0; i--) {
+      const p = state.particles[i];
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vy += 0.15 * dt;
+      p.life -= dt;
+      if (p.life <= 0) {
+        state.particles.splice(i, 1);
+      }
+    }
+
+    // Timers
+    if (state.flashTimer > 0) state.flashTimer -= dt;
+    if (state.levelUpTimer > 0) state.levelUpTimer -= dt;
+
+    state.frameCount++;
+
+    // Game over
+    if (state.lives <= 0) {
+      state.screen = 'gameover';
+      state.lives = 0;
+      if (state.score > state.highScore) {
+        state.highScore = state.score;
+        state.newHighScore = true;
+        localStorage.setItem(HS_KEY, String(state.score));
+      }
+      playSound('gameover');
+    }
+  }
+
+  // --- Render ---
+  function render() {
+    // Background
+    ctx.fillStyle = C.bg;
+    ctx.fillRect(0, 0, W, H);
+
+    if (state.screen === 'title') {
+      renderTitle();
+    } else if (state.screen === 'playing') {
+      renderGame();
+    } else {
+      renderGame(); // show final state
+      renderGameOver();
+    }
+  }
+
+  function renderTitle() {
+    // Stars
+    ctx.fillStyle = C.goldLight;
+    const starPositions = [
+      [50, 80], [120, 45], [250, 70], [340, 90], [80, 150], [310, 130],
+      [180, 60], [60, 200], [350, 180], [200, 140], [30, 300], [370, 280],
+    ];
+    for (const [sx, sy] of starPositions) {
+      const twinkle = Math.sin(state.frameCount * 0.05 + sx) > 0.3;
+      if (twinkle) ctx.fillRect(sx, sy, 2, 2);
+    }
+
+    // Title
+    drawTextCentered('STRAWBERRY', 120, 6, C.red);
+    drawTextCentered('CATCHER', 160, 6, C.gold);
+
+    // Bouncing strawberry
+    state.titleBerryY += state.titleBerryDir * 0.3;
+    if (state.titleBerryY > 8) state.titleBerryDir = -1;
+    if (state.titleBerryY < -8) state.titleBerryDir = 1;
+    drawSprite(STRAWBERRY, W / 2 - 16, 220 + state.titleBerryY, PX);
+
+    // Mason jar below
+    drawSprite(JAR, W / 2 - 24, 310, PX);
+
+    // Instructions
+    const blink = Math.sin(state.frameCount * 0.06) > 0;
+    if (blink) {
+      drawTextCentered('PRESS START', 400, 4, C.cream);
+    }
+    drawTextCentered('ARROWS OR TAP TO PLAY', 440, 3, C.sage);
+
+    // High score
+    if (state.highScore > 0) {
+      drawTextCentered('HIGH SCORE: ' + state.highScore, 490, 3, C.goldLight);
+    }
+
+    // Brand
+    drawTextCentered('GENESEO JAM FUND', 540, 3, C.sage);
+  }
+
+  function renderGame() {
+    // Ground line
+    ctx.fillStyle = C.sage;
+    ctx.fillRect(0, H - 8, W, 2);
+    ctx.fillStyle = C.green;
+    for (let x = 0; x < W; x += 12) {
+      ctx.fillRect(x, H - 12, 3, 4);
+      ctx.fillRect(x + 6, H - 10, 2, 2);
+    }
+
+    // Items
+    for (const item of state.items) {
+      switch (item.type) {
+        case 'strawberry':
+          drawSprite(STRAWBERRY, item.x, item.y, PX);
+          break;
+        case 'golden':
+          drawSprite(GOLDEN_STRAWBERRY, item.x, item.y, PX);
+          // Sparkle effect
+          if (state.frameCount % 8 < 4) {
+            ctx.fillStyle = C.cream;
+            ctx.fillRect(item.x - 2, item.y + 12, 2, 2);
+            ctx.fillRect(item.x + 30, item.y + 8, 2, 2);
+          }
+          break;
+        case 'rotten':
+          drawSprite(ROTTEN_STRAWBERRY, item.x, item.y, PX);
+          // Stink lines
+          if (state.frameCount % 12 < 6) {
+            ctx.fillStyle = C.rotGreen;
+            ctx.fillRect(item.x + 8, item.y - 6, 2, 4);
+            ctx.fillRect(item.x + 20, item.y - 8, 2, 4);
+          }
+          break;
+        case 'music':
+          drawSprite(MUSIC_NOTE, item.x, item.y, PX);
+          break;
+      }
+    }
+
+    // Player (jar)
+    const jarSprite = state.powerUpTimer > 0 ? JAR_WIDE : JAR;
+    const jarW = jarSprite[0].length * PX;
+    const jarH = jarSprite.length * PX;
+    drawSprite(jarSprite, state.playerX - jarW / 2, H - 44 - jarH / 2, PX);
+
+    // Power-up glow
+    if (state.powerUpTimer > 0) {
+      ctx.strokeStyle = C.gold;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.3 + 0.2 * Math.sin(state.frameCount * 0.15);
+      ctx.strokeRect(
+        state.playerX - jarW / 2 - 3,
+        H - 44 - jarH / 2 - 3,
+        jarW + 6, jarH + 6
+      );
+      ctx.globalAlpha = 1;
+    }
+
+    // Particles
+    for (const p of state.particles) {
+      const alpha = p.life / p.maxLife;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(Math.floor(p.x), Math.floor(p.y), 4, 4);
+    }
+    ctx.globalAlpha = 1;
+
+    // Flash effect
+    if (state.flashTimer > 0) {
+      ctx.globalAlpha = state.flashTimer / 20;
+      ctx.fillStyle = state.flashColor;
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
+
+    // HUD
+    drawText('SCORE:' + String(state.score).padStart(5, '0'), 8, 8, 3, C.cream);
+
+    // Lives as mini strawberries
+    for (let i = 0; i < state.lives; i++) {
+      drawSprite(MINI_BERRY, W - 20 - i * 18, 8, 4);
+    }
+
+    // Level
+    drawText('LVL ' + state.level, 8, 28, 2, C.sage);
+
+    // Level up text
+    if (state.levelUpTimer > 0) {
+      const alpha = Math.min(1, state.levelUpTimer / 30);
+      ctx.globalAlpha = alpha;
+      drawTextCentered('LEVEL UP!', 260, 5, C.gold);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  function renderGameOver() {
+    // Dim overlay
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    ctx.fillRect(0, 0, W, H);
+
+    drawTextCentered('GAME OVER', 180, 6, C.red);
+    drawTextCentered('SCORE: ' + state.score, 240, 4, C.cream);
+    drawTextCentered('HIGH SCORE: ' + state.highScore, 275, 3, C.goldLight);
+
+    if (state.newHighScore) {
+      const blink = Math.sin(state.frameCount * 0.1) > 0;
+      if (blink) {
+        drawTextCentered('NEW RECORD!', 310, 4, C.gold);
+      }
+    }
+
+    const blink2 = Math.sin(state.frameCount * 0.06) > 0;
+    if (blink2) {
+      drawTextCentered('TAP OR ENTER', 380, 3, C.cream);
+      drawTextCentered('TO PLAY AGAIN', 400, 3, C.cream);
+    }
+  }
+
+  // --- Input ---
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'a') state.keys.left = true;
+    if (e.key === 'ArrowRight' || e.key === 'd') state.keys.right = true;
+
+    if (state.screen === 'title') {
+      state.screen = 'playing';
+      resetGame();
+    } else if (state.screen === 'gameover') {
+      if (e.key === 'Enter' || e.key === ' ') {
+        resetGame();
+        state.screen = 'playing';
+      }
+    }
+  });
+
+  document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'a') state.keys.left = false;
+    if (e.key === 'ArrowRight' || e.key === 'd') state.keys.right = false;
+  });
+
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const touchX = e.touches[0].clientX - rect.left;
+    const midpoint = rect.width / 2;
+    state.touch.active = true;
+    state.touch.side = touchX < midpoint ? 'left' : 'right';
+
+    if (state.screen === 'title') {
+      state.screen = 'playing';
+      resetGame();
+    } else if (state.screen === 'gameover') {
+      resetGame();
+      state.screen = 'playing';
+    }
+  });
+
+  canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const touchX = e.touches[0].clientX - rect.left;
+    const midpoint = rect.width / 2;
+    state.touch.side = touchX < midpoint ? 'left' : 'right';
+  });
+
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    state.touch.active = false;
+    state.touch.side = '';
+  });
+
+  canvas.addEventListener('mousedown', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const midpoint = rect.width / 2;
+    state.touch.active = true;
+    state.touch.side = mouseX < midpoint ? 'left' : 'right';
+
+    if (state.screen === 'title') {
+      state.screen = 'playing';
+      resetGame();
+    } else if (state.screen === 'gameover') {
+      resetGame();
+      state.screen = 'playing';
+    }
+  });
+
+  canvas.addEventListener('mousemove', (e) => {
+    if (!state.touch.active) return;
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const midpoint = rect.width / 2;
+    state.touch.side = mouseX < midpoint ? 'left' : 'right';
+  });
+
+  canvas.addEventListener('mouseup', () => {
+    state.touch.active = false;
+    state.touch.side = '';
+  });
+
+  // Sound toggle
+  soundBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    state.soundEnabled = !state.soundEnabled;
+    soundBtn.textContent = state.soundEnabled ? '🔊' : '🔇';
+    if (state.soundEnabled) ensureAudio();
+  });
+
+  // --- Game Loop ---
+  let lastTime = 0;
+
+  function gameLoop(timestamp: number) {
+    if (lastTime === 0) lastTime = timestamp;
+    const rawDt = (timestamp - lastTime) / 16.67; // normalize to ~60fps
+    const dt = Math.min(rawDt, 3); // cap to prevent huge jumps
+    lastTime = timestamp;
+
+    state.frameCount++;
+    update(dt);
+    render();
+    requestAnimationFrame(gameLoop);
+  }
+
+  requestAnimationFrame(gameLoop);
+})();
+</script>
