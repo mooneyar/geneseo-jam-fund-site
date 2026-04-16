@@ -18,6 +18,7 @@ const sponsorLogoMap: Record<string, string> = {
   'tompkins_logo.png': 'Tompkins Bank',
   'wegmans.png': 'Wegmans',
   'The Chosen Pot Sign.JPG': 'The Chosen Pot',
+  'cottones_logo.png': 'Cottone Auctions',
 };
 
 const sponsorLogosDir = path.join(process.cwd(), 'public/images/sponsors');
@@ -207,7 +208,7 @@ const sponsorTiers = [
 
       <div class="sponsor-logos">
         <div class="sponsor-logos__grid">
-          {['BARILLALOGO2021.png', 'aes_logo.png', 'gvca_logo.png', 'p_and_cg.ai.jpg', 'wegmans.png', 'The Chosen Pot Sign.JPG'].map(logo => (
+          {['BARILLALOGO2021.png', 'aes_logo.png', 'gvca_logo.png', 'p_and_cg.ai.jpg', 'wegmans.png', 'The Chosen Pot Sign.JPG', 'cottones_logo.png'].map(logo => (
             <div class="sponsor-logos__item">
               <img src={`${base}images/sponsors/${logo}`} alt={sponsorLogoMap[logo] || logo} />
             </div>
