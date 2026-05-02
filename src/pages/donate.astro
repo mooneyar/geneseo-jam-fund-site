@@ -13,6 +13,18 @@ const sponsorLogoMap: Record<string, string> = {
   'Coast50_hor_gold_CAREERS_CMYK.png': 'Coast Professional',
   'ENCOMPASS PIPELINE STD PNG(White).png': 'Encompass Pipeline',
 };
+
+const sponsorUrlMap: Record<string, string> = {
+  'BARILLALOGO2021.png': 'https://www.barillagroup.com/en/careers/',
+  'aes_logo.png': 'https://www.aes.com/',
+  'gvca_logo.png': 'https://gvartscouncil.org/',
+  'p_and_cg.ai.jpg': 'https://www.pandcg.com/',
+  'wegmans.png': 'https://jobs.wegmans.com/en',
+  'The Chosen Pot Sign.JPG': 'https://www.instagram.com/popular/the-chosen-pot-dispensary-lima-ny/',
+  'cottones_logo.png': 'https://www.cottoneauctions.com/',
+  'Coast50_hor_gold_CAREERS_CMYK.png': 'https://www.coastprofessional.com/careers',
+  'ENCOMPASS PIPELINE STD PNG(White).png': 'https://www.encompasspipelinellc.com/',
+};
 ---
 
 <BaseLayout title="Donate" description="Support the Geneseo Jam Fund with a tax-deductible donation. Your contribution keeps live music alive in Geneseo, NY.">
@@ -159,7 +171,9 @@ const sponsorLogoMap: Record<string, string> = {
         <div class="sponsor-logos__grid">
           {['BARILLALOGO2021.png', 'aes_logo.png', 'gvca_logo.png', 'p_and_cg.ai.jpg', 'wegmans.png', 'The Chosen Pot Sign.JPG', 'cottones_logo.png', 'Coast50_hor_gold_CAREERS_CMYK.png', 'ENCOMPASS PIPELINE STD PNG(White).png'].map(logo => (
             <div class="sponsor-logos__item">
-              <img src={`${base}images/sponsors/${logo}`} alt={sponsorLogoMap[logo] || logo} />
+              <a href={sponsorUrlMap[logo]} target="_blank" rel="noopener noreferrer">
+                <img src={`${base}images/sponsors/${logo}`} alt={sponsorLogoMap[logo] || logo} />
+              </a>
             </div>
           ))}
         </div>
