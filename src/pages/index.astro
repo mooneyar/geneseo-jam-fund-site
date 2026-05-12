@@ -91,19 +91,19 @@ const base = import.meta.env.BASE_URL;
       <div class="lineup-schedule">
         <div class="lineup-date">
           <span class="lineup-date__label">May 28</span>
-          <span class="lineup-date__artists">The Town Pants</span>
+          <span class="lineup-date__artists">The Town Pants <span class="lineup-wsg">w/ Smile &amp; The Ghost</span></span>
         </div>
         <div class="lineup-date">
           <span class="lineup-date__label">June 4</span>
-          <span class="lineup-date__artists">BeatlesRoc</span>
+          <span class="lineup-date__artists">BeatlesRoc <span class="lineup-wsg">w/ Felicity Thomas</span></span>
         </div>
         <div class="lineup-date">
           <span class="lineup-date__label">June 18</span>
-          <span class="lineup-date__artists">Dirty Blanket</span>
+          <span class="lineup-date__artists">Dirty Blanket <span class="lineup-wsg">w/ Eastern Boys in Western Shirts</span></span>
         </div>
         <div class="lineup-date">
           <span class="lineup-date__label">July 9</span>
-          <span class="lineup-date__artists">The World's Largest 80's Party feat. M80's</span>
+          <span class="lineup-date__artists">The World's Largest 80's Party feat. M80's <span class="lineup-wsg">w/ Roc Academy</span></span>
         </div>
         <div class="lineup-date">
           <span class="lineup-date__label">July 23</span>
@@ -252,6 +252,12 @@ const base = import.meta.env.BASE_URL;
     color: var(--color-primary-dark);
     font-weight: 600;
     font-size: 0.95rem;
+  }
+
+  .lineup-wsg {
+    font-weight: 400;
+    color: var(--color-text-light);
+    font-size: 0.85rem;
   }
 
   @media (max-width: 480px) {
