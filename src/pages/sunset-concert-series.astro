@@ -129,9 +129,36 @@ const sponsorTiers = [
       <p style="color: var(--color-text-light); max-width: 620px; margin: 0 auto 1rem;">
         Admission is free of charge thanks to the generosity of our sponsors and donors.
       </p>
-      <p style="max-width: 620px; margin: 0 auto 1rem;">
-        <strong>2026 dates:</strong> May 28, June 4, June 18, July 9, July 23, August 6, and August 20
-      </p>
+      <div class="lineup-schedule">
+        <div class="lineup-date">
+          <span class="lineup-date__label">May 28</span>
+          <span class="lineup-date__artists">The Town Pants <span class="lineup-wsg">w/ Smile &amp; The Ghost</span></span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">June 4</span>
+          <span class="lineup-date__artists">BeatlesRoc <span class="lineup-wsg">w/ Felicity Thomas</span></span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">June 18</span>
+          <span class="lineup-date__artists">Dirty Blanket <span class="lineup-wsg">w/ Eastern Boys in Western Shirts</span></span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">July 9</span>
+          <span class="lineup-date__artists">The World's Largest 80's Party feat. M80's <span class="lineup-wsg">w/ Roc Academy</span></span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">July 23</span>
+          <span class="lineup-date__artists">Ric Robertson Band &bull; Adrianna Noone</span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">Aug 6</span>
+          <span class="lineup-date__artists">Prime Time Funk &bull; Cinnamon Jones</span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">Aug 20</span>
+          <span class="lineup-date__artists">Mustard Tigers &bull; Folkfaces</span>
+        </div>
+      </div>
       <p style="color: var(--color-text-light); max-width: 620px; margin: 0 auto 1.5rem;">
         Interested in sponsoring? Contact us at
         <a href="mailto:mooney@geneseojamfund.org">mooney@geneseojamfund.org</a>.
@@ -311,6 +338,51 @@ const sponsorTiers = [
     width: 100%;
     border-radius: 10px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .lineup-schedule {
+    max-width: 560px;
+    margin: 0 auto 1.5rem;
+    text-align: left;
+  }
+
+  .lineup-date {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--color-cream-dark);
+  }
+
+  .lineup-date:last-child {
+    border-bottom: none;
+  }
+
+  .lineup-date__label {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-gold);
+    min-width: 70px;
+    font-size: 0.95rem;
+  }
+
+  .lineup-date__artists {
+    color: var(--color-primary-dark);
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .lineup-wsg {
+    font-weight: 400;
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 480px) {
+    .lineup-date {
+      flex-direction: column;
+      gap: 0.15rem;
+    }
   }
 
   .sponsor-logos {

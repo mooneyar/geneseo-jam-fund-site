@@ -88,9 +88,36 @@ const base = import.meta.env.BASE_URL;
       <div class="lineup-image" style="max-width: 400px; margin: 0 auto 1rem;">
         <img src={`${base}images/sunset-series-lineup-2026.jpg`} alt="2026 Sunset Concert Series Lineup" style="width: 100%; border-radius: 10px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);" />
       </div>
-      <p style="max-width: 620px; margin: 0 auto 1.5rem; font-size: 0.95rem; color: var(--color-text-light);">
-        <strong>2026 dates:</strong> May 28, June 4, June 18, July 9, July 23, August 6, and August 20
-      </p>
+      <div class="lineup-schedule">
+        <div class="lineup-date">
+          <span class="lineup-date__label">May 28</span>
+          <span class="lineup-date__artists">The Town Pants</span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">June 4</span>
+          <span class="lineup-date__artists">BeatlesRoc</span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">June 18</span>
+          <span class="lineup-date__artists">Dirty Blanket</span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">July 9</span>
+          <span class="lineup-date__artists">The World's Largest 80's Party feat. M80's</span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">July 23</span>
+          <span class="lineup-date__artists">Ric Robertson Band &bull; Adrianna Noone</span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">Aug 6</span>
+          <span class="lineup-date__artists">Prime Time Funk &bull; Cinnamon Jones</span>
+        </div>
+        <div class="lineup-date">
+          <span class="lineup-date__label">Aug 20</span>
+          <span class="lineup-date__artists">Mustard Tigers &bull; Folkfaces</span>
+        </div>
+      </div>
       <div class="donate-grid" style="max-width: 420px; margin: 0 auto;">
         <a href="https://donate.stripe.com/9B6aEY1ym1oyaCifdZgIo03" class="btn btn--primary btn--small" target="_blank" rel="noopener">$10</a>
         <a href="https://donate.stripe.com/9B628s7WK4AK11I7LxgIo01" class="btn btn--primary btn--small" target="_blank" rel="noopener">$25</a>
@@ -192,6 +219,45 @@ const base = import.meta.env.BASE_URL;
 
     .home-hero__overlay p {
       font-size: 1.1rem;
+    }
+  }
+
+  .lineup-schedule {
+    max-width: 460px;
+    margin: 0 auto 1.5rem;
+    text-align: left;
+  }
+
+  .lineup-date {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .lineup-date:last-child {
+    border-bottom: none;
+  }
+
+  .lineup-date__label {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-gold);
+    min-width: 65px;
+    font-size: 0.9rem;
+  }
+
+  .lineup-date__artists {
+    color: var(--color-primary-dark);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 480px) {
+    .lineup-date {
+      flex-direction: column;
+      gap: 0.15rem;
     }
   }
 </style>
