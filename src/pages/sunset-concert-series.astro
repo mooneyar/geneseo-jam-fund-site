@@ -21,6 +21,7 @@ const sponsorLogoMap: Record<string, string> = {
   'cottones_logo.png': 'Cottone Auctions',
   'Coast50_hor_gold_CAREERS_CMYK.png': 'Coast Professional',
   'ENCOMPASS PIPELINE STD PNG(White).png': 'Encompass Pipeline',
+  'rohrbach_logo.jpg': 'Rohrbach Brewing Company',
 };
 
 const sponsorUrlMap: Record<string, string> = {
@@ -33,12 +34,13 @@ const sponsorUrlMap: Record<string, string> = {
   'cottones_logo.png': 'https://www.cottoneauctions.com/',
   'Coast50_hor_gold_CAREERS_CMYK.png': 'https://www.coastprofessional.com/careers',
   'ENCOMPASS PIPELINE STD PNG(White).png': 'https://www.encompasspipelinellc.com/',
+  'rohrbach_logo.jpg': 'https://www.rohrbachs.com/',
 };
 
 const sponsorLogosDir = path.join(process.cwd(), 'public/images/sponsors');
 let sponsorLogos: string[] = [];
 try {
-  const only2026 = new Set(['The Chosen Pot Sign.JPG', 'cottones_logo.png', 'Coast50_hor_gold_CAREERS_CMYK.png', 'ENCOMPASS PIPELINE STD PNG(White).png']);
+  const only2026 = new Set(['The Chosen Pot Sign.JPG', 'cottones_logo.png', 'Coast50_hor_gold_CAREERS_CMYK.png', 'ENCOMPASS PIPELINE STD PNG(White).png', 'rohrbach_logo.jpg']);
   sponsorLogos = fs.readdirSync(sponsorLogosDir)
     .filter(f => /\.(png|jpg|jpeg|svg|webp)$/i.test(f) && !only2026.has(f))
     .sort();
@@ -251,7 +253,7 @@ const sponsorTiers = [
 
       <div class="sponsor-logos">
         <div class="sponsor-logos__grid">
-          {['BARILLALOGO2021.png', 'aes_logo.png', 'gvca_logo.png', 'p_and_cg.ai.jpg', 'wegmans.png', 'The Chosen Pot Sign.JPG', 'cottones_logo.png', 'Coast50_hor_gold_CAREERS_CMYK.png', 'ENCOMPASS PIPELINE STD PNG(White).png'].map(logo => (
+          {['BARILLALOGO2021.png', 'aes_logo.png', 'gvca_logo.png', 'p_and_cg.ai.jpg', 'wegmans.png', 'The Chosen Pot Sign.JPG', 'cottones_logo.png', 'Coast50_hor_gold_CAREERS_CMYK.png', 'ENCOMPASS PIPELINE STD PNG(White).png', 'rohrbach_logo.jpg'].map(logo => (
             <div class="sponsor-logos__item">
               <a href={sponsorUrlMap[logo]} target="_blank" rel="noopener noreferrer">
                 <img src={`${base}images/sponsors/${logo}`} alt={sponsorLogoMap[logo] || logo} />
